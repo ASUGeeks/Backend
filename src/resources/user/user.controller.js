@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const { User, validateUser, validateUserData } = require("./user.model.js");
 const jwt = require("jsonwebtoken");
-const { Course } = require("../courses/course.model.js");
+
 
 const login = async function (req, res) {
     /**
@@ -33,10 +33,11 @@ const getCourses = async function (req, res) {
     const token = req.headers.token;
     if (!token) return res.status(401).send({ message: "Forbidden" });
 
+    const payload = jwt.verify(token, process.env.APP_KEY);
+    if(!payload) return res.status(401).send({message: "Forbidden"});
+
     try {
-        const payload = jwt.verify(token, process.env.APP_KEY);
-        const id = payload.user_id;
-        const user = await User.findById(id).populate("courses").exec();
+        const user = await User.findById(payload.user_id).populate("courses").exec();
         res.send({ message: "Success", courses: user.courses });
     } catch (e) {
         return res.status(500).send({ message: e.message });
