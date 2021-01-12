@@ -72,6 +72,26 @@ async function get_users_in_course(req, res) {
 }
 
 
+async function get_all_courses(req, res) {
+    const token = req.headers.token;
+    if (!token) return res.status(401).send("Forbidden");
+
+    const payload = jwt.verify(token, process.env.APP_KEY);
+    if (!payload) return res.status(401).send("Forbidden");
+
+    try {
+        let courses = await Course.find({});
+        res.send({
+            courses: courses,
+            message: "Success",
+        });
+    } catch (e) {
+        return res.status(500).send({ message: e.message });
+    }
+}
+
+
 module.exports.create_course = create_course;
 module.exports.take_content = take_content;
 module.exports.get_users_in_course = get_users_in_course;
+module.exports.get_all_courses = get_all_courses;

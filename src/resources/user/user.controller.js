@@ -61,7 +61,7 @@ const createAccount = async function (req, res) {
         if (user)
             return res
                 .status(400)
-                .send(`Username: ${req.body.username} already exists`);
+                .send({message: `Username: ${req.body.username} already exists`});
 
         user = new User({
             username: req.body.username,

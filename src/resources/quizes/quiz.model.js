@@ -25,7 +25,7 @@ quizSchema.methods.grade = function(answers){
  *      hash: "dfad",
  *      question: "what is your name",
  *      valid_answers: ["mahmoud", "hammad", "hisham", "omda", "naoum", "8andoor"]
- *  }
+ *  },
  * ]
  *
  *
