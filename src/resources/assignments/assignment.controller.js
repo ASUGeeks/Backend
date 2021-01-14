@@ -30,7 +30,7 @@ const create_assignment = async function (req, res) {
         });
 
         await assignment.save();
-        await Course.findOneAndUpdate({ code: req.body.course_code }, { $push: { assignments: assignment._id } }, { useFindAndModify: false })
+        await Course.findOneAndUpdate({ code: req.body.course_code }, { $addToSet: { assignments: assignment._id } }, { useFindAndModify: false })
         res.send({ message: "Assignment Created successfully" });
     } catch (e) {
         return res.status(500).send({ message: e.message });
@@ -57,12 +57,12 @@ const submit_assignment = async function (req, res) {
             assignment: assignment_id
         })
 
-        const assignment = await Assignment.findByIdAndUpdate(assignment_id, { $push: { submissions: submission._id } }, { useFindAndModify: false });
+        const assignment = await Assignment.findByIdAndUpdate(assignment_id, { $addToSet: { submissions: submission._id } }, { useFindAndModify: false });
 
         await submission.save()
 
         await User.findByIdAndUpdate(payload.user_id, {
-            $push: { submissions: submission._id }
+            $addToSet: { submissions: submission._id }
         }, { new: true, useFindAndModify: false });
 
         res.send({ message: "Success" });

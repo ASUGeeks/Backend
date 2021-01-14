@@ -57,9 +57,9 @@ describe("Forum", () => {
         });
         await comment.save();
 
-        await Question.findByIdAndUpdate(question._id, { $push: { comments: comment._id } }, { new: true, useFindAndModify: false })
-        await Course.findByIdAndUpdate(course_id, { $push: { users: user_id, questions: question.id } }, { new: true, useFindAndModify: false })
-        await User.findByIdAndUpdate(user_id, { $push: { courses: course_id } }, { new: true, useFindAndModify: false })
+        await Question.findByIdAndUpdate(question._id, { $addToSet: { comments: comment._id } }, { new: true, useFindAndModify: false })
+        await Course.findByIdAndUpdate(course_id, { $addToSet: { users: user_id, questions: question.id } }, { new: true, useFindAndModify: false })
+        await User.findByIdAndUpdate(user_id, { $addToSet: { courses: course_id } }, { new: true, useFindAndModify: false })
         done();
     });
 

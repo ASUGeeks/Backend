@@ -59,8 +59,8 @@ describe("test user relations with courses", () => {
         await course.save();
         course_id = course._id;
 
-        // await Course.findByIdAndUpdate(course_id, { $push: { users: student } }, { new: true, useFindAndModify: false })
-        // await User.findByIdAndUpdate(student_id, { $push: { courses: course_id } }, { new: true, useFindAndModify: false })
+        // await Course.findByIdAndUpdate(course_id, { $addToSet: { users: student } }, { new: true, useFindAndModify: false })
+        // await User.findByIdAndUpdate(student_id, { $addToSet: { courses: course_id } }, { new: true, useFindAndModify: false })
 
         course = new Course({
             name: "Course2",

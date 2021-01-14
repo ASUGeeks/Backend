@@ -42,7 +42,7 @@ const create_quiz = async function(req, res){
 
         await quiz.save();
 
-        await Course.findOneAndUpdate({code: req.body.course_code}, {$push: {quizes: quiz._id}}, {useFindAndModify: false})
+        await Course.findOneAndUpdate({code: req.body.course_code}, {$addToSet: {quizes: quiz._id}}, {useFindAndModify: false})
         res.send({message: "Quiz Created successfully"});
     }catch(e){
         return res.status(500).send({message: e.message});
@@ -72,11 +72,11 @@ const submit_quiz = async function(req, res){
         const quiz = await Quiz.findById(quiz_id);
         const grade = quiz.grade(answers);
         await User.findByIdAndUpdate(payload.user_id, {
-            $push: {taken_quizes: {_id: quiz._id, grade: grade}}
+            $addToSet: {taken_quizes: {_id: quiz._id, grade: grade}}
         }, {new: true, useFindAndModify: false});
 
         await Quiz.findByIdAndUpdate(quiz._id, {
-            $push: {users_taken: {_id: payload.user_id, grade: grade}}
+            $addToSet: {users_taken: {_id: payload.user_id, grade: grade}}
         }, {new: true, useFindAndModify: false});
 
 

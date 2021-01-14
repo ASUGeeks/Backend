@@ -24,7 +24,7 @@ const create_announcement = async function(req, res){
 
         await ann.save();
 
-        await Course.findByIdAndUpdate(course._id, {$push: {announcements: ann._id}}, { new: true, useFindAndModify: false })
+        await Course.findByIdAndUpdate(course._id, {$addToSet: {announcements: ann._id}}, { new: true, useFindAndModify: false })
         res.send({message: "Announcement Created successfully"});
     }catch(e){
         return res.status(500).send({message: e.message});

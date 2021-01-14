@@ -45,8 +45,8 @@ describe("Quiz", () => {
         await course.save();
         course_id = course._id;
 
-        await Course.findByIdAndUpdate(course_id, { $push: { users: user_id } }, { new: true, useFindAndModify: false })
-        await User.findByIdAndUpdate(user_id, { $push: { courses: course_id } }, { new: true, useFindAndModify: false })
+        await Course.findByIdAndUpdate(course_id, { $addToSet: { users: user_id } }, { new: true, useFindAndModify: false })
+        await User.findByIdAndUpdate(user_id, { $addToSet: { courses: course_id } }, { new: true, useFindAndModify: false })
 
         done();
     });

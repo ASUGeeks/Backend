@@ -68,8 +68,8 @@ describe("Assignment", () => {
         await assignment.save();
         assignment_id = assignment._id;
 
-        await Course.findByIdAndUpdate(course_id, { $push: { users: user_id, assignments: assignment_id } }, { new: true, useFindAndModify: false })
-        await User.findByIdAndUpdate(user_id, { $push: { courses: course_id } }, { new: true, useFindAndModify: false })
+        await Course.findByIdAndUpdate(course_id, { $addToSet: { users: user_id, assignments: assignment_id } }, { new: true, useFindAndModify: false })
+        await User.findByIdAndUpdate(user_id, { $addToSet: { courses: course_id } }, { new: true, useFindAndModify: false })
 
         done();
     });
@@ -137,7 +137,7 @@ describe("Assignment", () => {
                 url: "someurl.net",
             });
             await submission.save();
-            await Assignment.findByIdAndUpdate(assignment_id, {$push: {submissions: submission._id}}, {new: true, useFindAndModify: false});
+            await Assignment.findByIdAndUpdate(assignment_id, {$addToSet: {submissions: submission._id}}, {new: true, useFindAndModify: false});
 
             let res = await request(server).get(`/submissions/${assignment_id}`).set("token", teacher_token);
             expect(res.body.message).toBe("Success");
@@ -163,7 +163,7 @@ describe("Assignment", () => {
                 url: "someurl.net",
             });
             await submission.save();
-            await Assignment.findByIdAndUpdate(assignment_id, {$push: {submissions: submission._id}}, {new: true, useFindAndModify: false});
+            await Assignment.findByIdAndUpdate(assignment_id, {$addToSet: {submissions: submission._id}}, {new: true, useFindAndModify: false});
 
             let res = await request(server).post(`/grade-submission`)
             .set("token", teacher_token)
@@ -185,7 +185,7 @@ describe("Assignment", () => {
                 url: "someurl.net",
             });
             await submission.save();
-            await Assignment.findByIdAndUpdate(assignment_id, {$push: {submissions: submission._id}}, {new: true, useFindAndModify: false});
+            await Assignment.findByIdAndUpdate(assignment_id, {$addToSet: {submissions: submission._id}}, {new: true, useFindAndModify: false});
 
             let res = await request(server).post(`/grade-submission`)
             .set("token", student_token)

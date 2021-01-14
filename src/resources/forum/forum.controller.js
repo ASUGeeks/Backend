@@ -54,7 +54,7 @@ async function ask_question(req, res) {
         });
 
         await q.save();
-        await Course.findOneAndUpdate({ code: course_code }, { $push: { questions: q._id } }, { new: true, useFindAndModify: false });
+        await Course.findOneAndUpdate({ code: course_code }, { $addToSet: { questions: q._id } }, { new: true, useFindAndModify: false });
         
         res.send({ message: "Success" });
     } catch (e) {
@@ -84,7 +84,7 @@ async function answer_question (req, res){
         });
 
         await c.save();
-        await Question.findByIdAndUpdate(qid, { $push: { comments: c._id } }, { new: true, useFindAndModify: false });
+        await Question.findByIdAndUpdate(qid, { $addToSet: { comments: c._id } }, { new: true, useFindAndModify: false });
         
         res.send({ message: "Success" });
     } catch (e) {
