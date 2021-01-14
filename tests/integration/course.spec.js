@@ -52,22 +52,19 @@ describe("test user authentication", () => {
     });
 
     describe("/create-course", () => {
-        it("should return 200 and should create course in database", (done) => {
+        it("should return 200 and should create course in database", async () => {
 
-            request(server).post("/create-course")
+            const res = await request(server).post("/create-course")
                 .set("token", token)
                 .send({
                     name: "Course one",
                     code: "CSE156",
                     TAs: ["Ahmed my heart"],
+                    imgURL: "https://someurliaflkdjfa.com",
                     credit_hours: 3,
-                }).then(res => {
-                    expect(res.body.message).toBe("Course 'Course one' was created successfully");
-                    expect(res.status).toBe(200);
-                    done();
-                }).catch(e => {
-                    console.log(e);
                 })
+                expect(res.body.message).toBe("Course 'Course one' was created successfully");
+                expect(res.status).toBe(200);
         });
     });
 

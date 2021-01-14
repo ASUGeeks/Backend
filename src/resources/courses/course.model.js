@@ -8,7 +8,7 @@ const CourseSchema = new mongoose.Schema({
     teachers: [{type: mongoose.Types.ObjectId, ref: "User"}],
     TAs: { type: [String] },
     credit_hours: { type: Number, min: 0, max: 10 },
-    imgURL: { type: String, default: "https://i.imgflip.com/2xlcka.png" },
+    coverImg: { type: String, default: "https://i.imgflip.com/2xlcka.png" },
     content: { type: [Object], default: [] },
     users: [{ type: mongoose.Types.ObjectId, ref: "User" }],
     quizes: [{ type: mongoose.Types.ObjectId, ref: "Quiz" }],
@@ -29,9 +29,8 @@ function validateCourse(data) {
     const Schema = joi.object({
         name: joi.string().min(5).max(255).required(),
         code: joi.string().min(1).max(255).required(),
-        TAs: joi.array(),
         credit_hours: joi.number().min(0).max(10)
-    });
+    }).unknown();
     // const result = joi.validate(data, Schema)
     const result = Schema.validate(data);
     if (result.error) return result.error.details[0].message;

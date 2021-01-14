@@ -20,10 +20,8 @@ async function create_course(req, res) {
         course = new Course({
             name: req.body.name,
             code: req.body.code,
-            profs: req.body.profs,
-            TAs: req.body.TAs,
             credit_hours: req.body.credit_hours,
-            imgURL: req.body.imgURL
+            coverImg: req.body.imgURL
         });
 
         await course.save();
