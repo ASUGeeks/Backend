@@ -106,9 +106,10 @@ describe("Quiz", () => {
 
     describe("submit-quiz/quiz-id", () => {
         it("should submit the quiz data and return the grad", async () => {
-            let res = await request(server).post(`/submit-quiz/${quiz_id}`)
+            let res = await request(server).post(`/submit-quiz`)
                 .set("token", student_token)
                 .send({
+                    quiz_id,
                     answers: [
                         { hash: "adlfkjad", question: "1", valid_answers: ["1", "2", "3", "4"], answer: 0 },
                         { hash: "adlfkj", question: "2", valid_answers: ["1", "2", "3", "4"], answer: 1 },

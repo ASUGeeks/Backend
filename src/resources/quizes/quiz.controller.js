@@ -54,7 +54,7 @@ const submit_quiz = async function(req, res){
     const token = req.headers.token;
     if (!token) return res.status(401).send("Forbidden");
 
-    const quiz_id = req.params.quiz_id;
+    const quiz_id = req.body.quiz_id;
     if(!quiz_id) return res.status(404).send({message: "Please send quiz id"});
 
     const payload = jwt.verify(token, process.env.APP_KEY);
