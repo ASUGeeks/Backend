@@ -7,10 +7,20 @@ const assignmentSchema = new mongoose.Schema({
     description: { type: String },
     url: { type: String },
     deadline: { type: Date, required: true },
-    users_taken: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+    submissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Submission" }]
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);
 
 
-exports.Assignment = Assignment;
+const submissionSchema = new mongoose.Schema({
+    assignment: {type: mongoose.Types.ObjectId, ref: "Assignment"},
+    user: {type: mongoose.Types.ObjectId, ref: "User"},
+    url: {type: String, required: true},
+    grade: {type: Number, default: 0},
+    graded: {type: Boolean, default: false}
+})
+
+const Submission = mongoose.model("Submission", submissionSchema)
+
+module.exports = { Assignment, Submission };
