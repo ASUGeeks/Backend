@@ -121,6 +121,55 @@ describe("test user authentication", () => {
         });
     });
 
+    describe("/list-users", () => {
+        beforeAll(async done => {
+            const hash = await bcrypt.hash("adminadmin", 10);
+            const user = new User({
+                username: "adminadmin",
+                password: hash,
+                email: "admin@example.com",
+                role: "admin"
+            });
+
+            await user.save();
+            token = await user.generateAuthToken();
+
+            const student = new User({
+                username: "studentstudent",
+                password: hash,
+                email: "student@example.com",
+                role: "student"
+            });
+            const teacher = new User({
+                username: "teacherteacher",
+                password: hash,
+                email: "teacher@example.com",
+                role: "teacher"
+            });
+
+            await student.save();
+            await teacher.save();
+            done();
+        });
+
+
+        afterAll(async (done) => {
+            await User.deleteMany({});
+            done();
+        });
+
+        it("should return list of students and teachers", async (done) => {
+            let res = await request(server).get("/list-users")
+                .set("token", token)
+                .send();
+            expect(res.body.message).toBe("Success");
+            expect(res.status).toBe(200);
+            expect(res.body.students).toHaveLength(1);
+            expect(res.body.teachers).toHaveLength(1);
+            done();
+        });
+    });
+
     describe("/get-users/course-id", () => {
 
         beforeAll(async done => {

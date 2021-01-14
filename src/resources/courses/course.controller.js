@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const { Types } = require("mongoose");
+const { User } = require("../user/user.model");
 const { Course, validateCourse } = require("./course.model");
 
 async function create_course(req, res) {
@@ -20,7 +22,8 @@ async function create_course(req, res) {
             code: req.body.code,
             profs: req.body.profs,
             TAs: req.body.TAs,
-            credit_hours: req.body.credit_hours
+            credit_hours: req.body.credit_hours,
+            imgURL: req.body.imgURL
         });
 
         await course.save();
@@ -90,8 +93,65 @@ async function get_all_courses(req, res) {
     }
 }
 
+async function assign_teachers(req, res) {
+    const token = req.headers.token;
+    if (!token) return res.status(401).send("Forbidden");
 
-module.exports.create_course = create_course;
-module.exports.take_content = take_content;
-module.exports.get_users_in_course = get_users_in_course;
-module.exports.get_all_courses = get_all_courses;
+    const payload = jwt.verify(token, process.env.APP_KEY);
+    if (!payload || payload.role !== "admin") return res.status(401).send("Forbidden");
+
+    try{
+        const teachers_ids = req.body.teachers.map(s => Types.ObjectId(s));
+        let users = await User.find({_id: {$in: teachers_ids}});
+        let course = await Course.findOneAndUpdate({
+            code: req.body.course_code
+        },
+        {
+            $push: {
+                teachers: {
+                    $each: users.map(u => u._id)
+                }
+            }
+        }, {useFindAndModify: false});
+
+        await User.updateMany({_id: {$in: teachers_ids}}, {$push: {courses: course._id} }, {useFindAndModify: false});
+
+        res.send({message: "added teachers successfully"});
+    }catch(e){
+        return res.status(500).send({message: e.message});
+    }
+}
+
+
+async function enroll_students(req, res) {
+    const token = req.headers.token;
+    if (!token) return res.status(401).send("Forbidden");
+
+    const payload = jwt.verify(token, process.env.APP_KEY);
+    if (!payload || payload.role !== "admin") return res.status(401).send("Forbidden");
+
+    try{
+        const students_ids = req.body.students.map(s => Types.ObjectId(s));
+        let users = await User.find({_id: {$in: students_ids}});
+        let course = await Course.findOneAndUpdate({
+            code: req.body.course_code
+        },
+        {
+            $push: {
+                users: {
+                    $each: users.map(u => u._id)
+                }
+            }
+        }, {useFindAndModify: false});
+
+        await User.updateMany({_id: {$in: students_ids}}, {$push: {courses: course._id} }, {useFindAndModify: false});
+
+        res.send({message: "added students successfully"});
+    }catch(e){
+        return res.status(500).send({message: e.message});
+    }
+}
+
+
+
+module.exports = { create_course, take_content, get_all_courses, get_users_in_course, assign_teachers, enroll_students }

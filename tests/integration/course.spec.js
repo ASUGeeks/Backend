@@ -59,7 +59,6 @@ describe("test user authentication", () => {
                 .send({
                     name: "Course one",
                     code: "CSE156",
-                    profs: ["Ashraf Salem", "Wathiq El-Qorashy"],
                     TAs: ["Ahmed my heart"],
                     credit_hours: 3,
                 }).then(res => {

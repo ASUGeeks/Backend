@@ -3,18 +3,23 @@ require("dotenv").config();
 
 const quizSchema = new mongoose.Schema({
     course: { type: mongoose.Types.ObjectId, required: true, ref: "Course" },
+    title: { type: String, required: true },
+    duration: { type: Number, default: 15 },
+    start_date: { type: Date, required: true },
     content: { type: [Object], maxlength: 15, minlength: 1, required: true },
     correct_answers: { type: [Object], maxlength: 15, minlength: 1, required: true },
-    users_taken: [{type: mongoose.Types.ObjectId, ref: "User"}]
+    users_taken: [{ type: mongoose.Schema.Types.Mixed, ref: "User", grade: {type: [Number], default: [0, 1]} }]
 });
 
 
-quizSchema.methods.grade = function(answers){
+quizSchema.methods.grade = function (answers) {
     let correct;
     let grade = 0;
-    for(answer of answers){
+    for (answer of answers) {
         correct = this.correct_answers.find(item => item.hash === answer.hash).answer;
-        if(correct === answer) grade += 1;
+        if (correct === answer.answer) {
+            grade = grade + 1;
+        }
     }
     return [grade, this.content.length];
 }
