@@ -43,6 +43,12 @@ const getCourses = async function (req, res) {
         })
         .exec();
 
+        for(c of user.courses){
+            for(q of c.quizes){
+                delete q.answer
+            }
+        }
+
         res.send({ message: "Success", courses: user.courses });
     } catch (e) {
         return res.status(500).send({ message: e.message });
