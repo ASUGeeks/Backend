@@ -73,7 +73,7 @@ describe("Forum", () => {
 
     describe("get Forum", () => {
         it("should return 200 and get all questions and comments for specific course", async () => {
-            console.log(course_id);
+
             const res = await request(server).get(`/forum/${course_id}`)
                 .set("token", student_token)
                 .send();

@@ -110,7 +110,6 @@ describe("test user relations with courses", () => {
                 course_code: "CSE101",
                 students: [student_id.toHexString()]
             });
-            console.log(student_id.toHexString())
 
             expect(res.body.message).toBe("added students successfully")
             expect(res.status).toBe(200);

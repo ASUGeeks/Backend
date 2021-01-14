@@ -153,6 +153,49 @@ describe("Assignment", () => {
             expect(res.body.message).toBe("Forbidden");
             expect(res.status).toBe(401);
         })
-    })
+    });
+
+    describe("grade submission", () => {
+        it("should return 200 grade the submission in the db", async () => {
+            const submission = new Submission({
+                user: user_id,
+                assignment: assignment_id,
+                url: "someurl.net",
+            });
+            await submission.save();
+            await Assignment.findByIdAndUpdate(assignment_id, {$push: {submissions: submission._id}}, {new: true, useFindAndModify: false});
+
+            let res = await request(server).post(`/grade-submission`)
+            .set("token", teacher_token)
+            .send({
+                grade: 50,
+                submission_id: submission._id
+            });
+            expect(res.body.message).toBe("Success");
+            
+            const graded = await Submission.findById(submission._id);
+            expect(graded.grade).toBe(50);
+            expect(graded.graded).toBe(true);
+        })
+
+        it("should return 401 Forbidden", async () => {
+            const submission = new Submission({
+                user: user_id,
+                assignment: assignment_id,
+                url: "someurl.net",
+            });
+            await submission.save();
+            await Assignment.findByIdAndUpdate(assignment_id, {$push: {submissions: submission._id}}, {new: true, useFindAndModify: false});
+
+            let res = await request(server).post(`/grade-submission`)
+            .set("token", student_token)
+            .send({
+                grade: 50,
+                submission_id: submission._id
+            });
+            expect(res.body.message).toBe("Forbidden");
+            expect(res.status).toBe(401);
+        })
+    });
 });
 

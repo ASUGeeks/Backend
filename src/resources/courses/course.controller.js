@@ -112,9 +112,9 @@ async function assign_teachers(req, res) {
                     $each: users.map(u => u._id)
                 }
             }
-        });
+        }, {useFindAndModify: false});
 
-        await User.updateMany({_id: {$in: teachers_ids}}, {$push: {courses: course._id} });
+        await User.updateMany({_id: {$in: teachers_ids}}, {$push: {courses: course._id} }, {useFindAndModify: false});
 
         res.send({message: "added teachers successfully"});
     }catch(e){
@@ -142,9 +142,9 @@ async function enroll_students(req, res) {
                     $each: users.map(u => u._id)
                 }
             }
-        });
+        }, {useFindAndModify: false});
 
-        await User.updateMany({_id: {$in: students_ids}}, {$push: {courses: course._id} });
+        await User.updateMany({_id: {$in: students_ids}}, {$push: {courses: course._id} }, {useFindAndModify: false});
 
         res.send({message: "added students successfully"});
     }catch(e){
